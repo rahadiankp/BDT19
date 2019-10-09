@@ -1,0 +1,65 @@
+version: '2'
+
+services:
+  db1:
+    container_name: db1
+    hostname: db1
+    build:
+      context: db1
+      dockerfile: Dockerfile
+    networks:
+      mysqlnet:
+        ipv4_address: 172.69.16.6
+    mem_limit: 256m
+
+  db2:
+    container_name: db2
+    hostname: db2
+    build:
+      context: db2
+      dockerfile: Dockerfile
+    networks:
+      mysqlnet:
+        ipv4_address: 172.69.16.7
+    mem_limit: 256m
+
+  db3:
+    container_name: db3
+    hostname: db3
+    build:
+      context: db3
+      dockerfile: Dockerfile
+    networks:
+      mysqlnet:
+        ipv4_address: 172.69.16.8
+    mem_limit: 256m
+
+  proxysql:
+    container_name: proxysql
+    hostname: proxysql
+    build:
+      context: proxy
+      dockerfile: Dockerfile
+    networks:
+      mysqlnet:
+        ipv4_address: 172.69.16.10
+    ports:
+      - 3306:6033
+    mem_limit: 256m
+
+  adminer:
+    container_name: adminer
+    image: adminer:4.7.3-standalone
+    ports:
+     - 8080:8080
+    networks:
+      mysqlnet:
+        ipv4_address: 172.69.16.9
+    mem_limit: 64m
+
+networks:
+  mysqlnet:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.69.16.0/28
