@@ -5,8 +5,8 @@ services:
     container_name: db1
     hostname: db1
     build:
-      context: db1
-      dockerfile: Dockerfile
+      context: db
+      dockerfile: Dockerfile_db1
     networks:
       mysqlnet:
         ipv4_address: 172.69.16.6
@@ -16,8 +16,8 @@ services:
     container_name: db2
     hostname: db2
     build:
-      context: db2
-      dockerfile: Dockerfile
+      context: db
+      dockerfile: Dockerfile_db2
     networks:
       mysqlnet:
         ipv4_address: 172.69.16.7
@@ -27,8 +27,8 @@ services:
     container_name: db3
     hostname: db3
     build:
-      context: db3
-      dockerfile: Dockerfile
+      context: db
+      dockerfile: Dockerfile_db3
     networks:
       mysqlnet:
         ipv4_address: 172.69.16.8
