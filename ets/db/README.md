@@ -8,7 +8,7 @@
     ```
     mysql -p < install_replication_plugin.sql
     ```
-3. Start replication. Run this after after every restart
+3. Start replication. Run this after after every restart  
     a. On bootstrap node
     ```
     mysql -p < start_replication_bootstrap.sql
