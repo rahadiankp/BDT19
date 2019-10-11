@@ -1,8 +1,0 @@
-FROM mysql:5.7.27
-
-ENV MYSQL_ROOT_PASSWORD root
-
-CMD ["--default-authentication-plugin=mysql_native_password"]
-
-COPY my.cnf /etc/mysql/my.cnf
-COPY *.sql /
