@@ -1,9 +1,14 @@
 FROM mysql:5.7.27
 
 ENV MYSQL_ROOT_PASSWORD root
+ENV MYSQL_DATABASE ojack_wallet
+ENV MYSQL_USER ojack
+ENV MYSQL_PASSWORD w4ll3t
 
 CMD ["--default-authentication-plugin=mysql_native_password"]
 
 COPY mysql_cnf/db2.cnf /etc/mysql/my.cnf
+COPY group_replication.so /usr/lib/mysql/plugin/group_replication.so
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 COPY README.md /
 COPY sqlfile/* /

@@ -38,9 +38,9 @@ loose-group_replication_ssl_mode = REQUIRED
 loose-group_replication_recovery_use_ssl = 1
 
 # Shared replication group configuration
-loose-group_replication_group_name = "959cf631-538c-415d-8164-ca00181be227"
-loose-group_replication_ip_whitelist = "172.69.16.6,172.69.16.7,172.69.16.8"
-loose-group_replication_group_seeds = "172.69.16.6:33061,172.69.16.7:33061,172.69.16.8:33061"
+loose-group_replication_group_name = "75caeeaa-c517-4b44-89a0-c6135cb82419"
+loose-group_replication_ip_whitelist = "172.69.16.6, 172.69.16.7, 172.69.16.8"
+loose-group_replication_group_seeds = "172.69.16.6:33061, 172.69.16.7:33061, 172.69.16.8:33061"
 
 # Single or Multi-primary mode? Uncomment these two lines
 # for multi-primary mode, where any host can accept writes
@@ -48,7 +48,7 @@ loose-group_replication_single_primary_mode = OFF
 loose-group_replication_enforce_update_everywhere_checks = ON
 
 # Host specific replication configuration
-server_id = 1
+server_id = 6
 bind-address = "172.69.16.6"
 report_host = "172.69.16.6"
 loose-group_replication_local_address = "172.69.16.6:33061"

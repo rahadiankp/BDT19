@@ -1,3 +1,5 @@
+SET SQL_LOG_BIN=0;
 CREATE USER 'monitor'@'%' IDENTIFIED BY 'monitor';
 GRANT SELECT on sys.* to 'monitor'@'%';
 FLUSH PRIVILEGES;
+SET SQL_LOG_BIN=1;
