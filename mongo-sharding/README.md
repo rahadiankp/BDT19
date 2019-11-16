@@ -76,3 +76,10 @@ Reddit Post Processor (RPP) is console application to process saved Reddit Posts
 2. Update Reddit Post's title
 3. Find top 5 subreddits which earn the most upvotes and avg. per post
 4. Find top 5 authors which earn the most upvotes and awards
+## Screenshots
+### Containers Deployment
+![Deployment](assets/deployment.png)
+### Provisioning Containers
+![Provisioning](assets/provision.png)
+### Application
+![Application](assets/application.png)
