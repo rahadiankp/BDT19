@@ -145,4 +145,8 @@ public class PostsRepository {
 
         return authors;
     }
+
+    public void closeConnection() {
+        this.client.close();
+    }
 }

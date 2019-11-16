@@ -27,7 +27,8 @@ public class RedditPostsProcessorComponent {
             System.out.println(" > 4. Delete Post");
             System.out.println(" > 5. Top 5 Subreddits");
             System.out.println(" > 6. Top 5 Authors");
-            System.out.println("Select [> ");
+            System.out.println(" > 7. Exit");
+            System.out.print("Select [> ");
             try {
                 selection = this.scanner.nextInt();
             } catch (Exception e) {
@@ -54,6 +55,9 @@ public class RedditPostsProcessorComponent {
                 case 6:
                     this.getTop5Authors();
                     break;
+                case 7:
+                    this.repository.closeConnection();
+                    return;
                 default:
                     System.out.println("Wrong selection");
             }
@@ -61,13 +65,13 @@ public class RedditPostsProcessorComponent {
     }
 
     private void createPost() {
-        System.out.println("ID:");
+        System.out.print("ID: ");
         String id = this.scanner.next();
-        System.out.println("Author:");
+        System.out.print("Author: ");
         String author = this.scanner.next();
-        System.out.println("Title:");
+        System.out.print("Title: ");
         String title = this.scanner.next();
-        System.out.println("Subreddit:");
+        System.out.print("Subreddit: ");
         String subreddit = this.scanner.next();
 
         Post post = new Post();
@@ -83,6 +87,7 @@ public class RedditPostsProcessorComponent {
     }
 
     private void readPost() {
+        System.out.print("ID: ");
         String id = this.scanner.next();
         Post post = this.repository.readPost(id);
         if (post == null) {
@@ -94,7 +99,9 @@ public class RedditPostsProcessorComponent {
     }
 
     private void updatePost() {
+        System.out.print("ID: ");
         String id = this.scanner.next();
+        System.out.print("Title: ");
         String title = this.scanner.next();
         Post post = this.repository.updatePostTitle(id, title);
         if (post == null) {
@@ -106,6 +113,7 @@ public class RedditPostsProcessorComponent {
     }
 
     private void deletePost() {
+        System.out.print("ID: ");
         String id = this.scanner.next();
         Post post = this.repository.deletePost(id);
         if (post == null) {
