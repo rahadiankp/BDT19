@@ -2,11 +2,11 @@
 ## Replication
 1. Create user for replication
     ```
-    mysql -p < config_replication.sql
+    mysql -p < 1_config_replication.sql
     ```
 2. Install `GROUP REPLICATION`  plugin
     ```
-    mysql -p < install_replication_plugin.sql
+    mysql -p < 2_install_replication_plugin.sql
     ```
 3. Start replication. Run this after after every restart  
     a. On bootstrap node
@@ -24,5 +24,5 @@
     ```
 2. Create `monitor` user
     ```
-    mysql -p < create_proxysql_user.sql
+    mysql -p < 3_create_proxysql_user.sql
     ```
