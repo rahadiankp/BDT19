@@ -1,0 +1,86 @@
+version: '2'
+
+networks:
+  clusternet:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.69.42.0/28
+
+services:
+  # ROUTER
+  router:
+    image: bdt19/mongo:4.2.1
+    container_name: router
+    hostname: router
+    command: mongos --configdb rs-config-server/config1:27019,config2:27019 --bind_ip_all
+    ports:
+      - 27017:27017
+    networks:
+      clusternet:
+        ipv4_address: 172.69.42.2
+
+  # CONFIGS
+  config1:
+    image: bdt19/mongo:4.2.1
+    container_name: config1 
+    hostname: config1
+    command: mongod --configsvr --replSet rs-config-server
+    networks:
+      clusternet:
+        ipv4_address: 172.69.42.3
+
+  config2:
+    image: bdt19/mongo:4.2.1
+    container_name: config2 
+    hostname: config2
+    command: mongod --configsvr --replSet rs-config-server
+    networks:
+      clusternet:
+        ipv4_address: 172.69.42.4
+
+  # SHARDS
+  shard1:
+    image: bdt19/mongo:4.2.1
+    container_name: shard1
+    hostname: shard1
+    command: mongod --shardsvr --replSet rs1
+    networks:
+      clusternet:
+        ipv4_address: 172.69.42.5
+
+  shard2:
+    image: bdt19/mongo:4.2.1
+    container_name: shard2
+    hostname: shard2
+    command: mongod --shardsvr --replSet rs2
+    networks:
+      clusternet:
+        ipv4_address: 172.69.42.6
+
+  shard3:
+    image: bdt19/mongo:4.2.1
+    container_name: shard3
+    hostname: shard3
+    command: mongod --shardsvr --replSet rs3
+    networks:
+      clusternet:
+        ipv4_address: 172.69.42.7
+
+  shard4:
+    image: bdt19/mongo:4.2.1
+    container_name: shard4
+    hostname: shard4
+    command: mongod --shardsvr --replSet rs4
+    networks:
+      clusternet:
+        ipv4_address: 172.69.42.8
+
+  shard5:
+    image: bdt19/mongo:4.2.1
+    container_name: shard5
+    hostname: shard5
+    command: mongod --shardsvr --replSet rs5
+    networks:
+      clusternet:
+        ipv4_address: 172.69.42.9

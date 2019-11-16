@@ -1,0 +1,5 @@
+sh.addShard("rs1/shard1:27018")
+sh.addShard("rs2/shard2:27018")
+sh.addShard("rs3/shard3:27018")
+sh.addShard("rs4/shard4:27018")
+sh.addShard("rs5/shard5:27018")
