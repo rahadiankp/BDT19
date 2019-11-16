@@ -1,0 +1,4 @@
+- Create, Read, Delete Reddit Post (by id)
+- Update Reddit Post's title (by id)
+- Find top 5 subreddits which earn the most upvotes and avg per post
+- Find top 5 authors which earn the most upvotes and awards
