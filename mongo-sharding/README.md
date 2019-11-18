@@ -144,4 +144,7 @@ db.getCollection('posts').aggregate([
 ### Provisioning Containers
 ![Provisioning](assets/provision.png)
 ### Application
-![Application](assets/application.png)
+#### Top 5 Subreddits
+![Top 5 Subreddits](assets/application.png)
+#### Top 5 Authors
+![Top 5 Authors](assets/application1.png)
