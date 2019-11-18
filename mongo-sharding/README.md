@@ -4,6 +4,17 @@
 - Dataset Description: Bunch of Reddit Posts collected from several subreddits (~2400 subreddits). Each data details post's title, author, upvotes count, downvotes count, awards count, subreddit
 - Source: Personal, scrapped directly from Reddit, with minor post-processing (stripping unnecesary fields)
 - Data Count: 64228 rows
+- Fields Description:
+  - `postId` : Post ID of the Reddit Post
+  - `author` : The creator of the Reddit Post
+  - `title` : The title of the Reddit Post
+  - `subreddit` : Subreddit where the post is posted (also acts as Shard Key)
+  - `upvotes` : Upvotes count of the Reddit Post
+  - `downvotes` : Downvotes count of the Reddit Post (always 0, unusable)
+  - `score` : Same as `upvotes`, unusable
+  - `awards` : Count of awards received for the Reddit Post
+  - `oc` : Is the post original content?
+  - `created`: When the post posted
 ## How-To Start Containers
 1. Build image `bdt19/mongo:4.2.1`. The image will contain necessary scripts to run the containers
 ```
