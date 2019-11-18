@@ -87,6 +87,57 @@ Reddit Post Processor (RPP) is console application to process saved Reddit Posts
 2. Update Reddit Post's title
 3. Find top 5 subreddits which earn the most upvotes and avg. per post
 4. Find top 5 authors which earn the most upvotes and awards
+### Aggregation Operation Explanation
+#### Find top 5 subreddits which earn the most upvotes and avg. per post
+##### Algorithm
+1. Group each data by `subreddit` field
+2. Each groupped data, sum each `upvotes` value (`totalUpvotes`), count total post (`postCount`), and calculate average (`avgUpvotes`). 
+3. Sort `totalUpvotes` and `avgUpvotes` descending
+4. Limit only 5 top data to be selected
+##### Mongo Query
+```json
+db.getCollection('posts').aggregate([
+	{
+		"$group": {
+			"_id": "$subreddit",
+			"totalUpvotes": { "$sum": "$upvotes" },
+			"postCount": { "$sum": 1 },
+			"avgUpvotes": { "$avg": "$upvotes" }
+		}
+	},
+	{
+		"$sort": {"totalUpvotes": -1, "avgUpvotes": -1 }
+	},
+	{
+		"$limit": 5
+	}
+])
+```
+#### Find top 5 authors which earn the most upvotes and awards
+##### Algorithm
+1. Group each data by `author` field
+2. Each groupped data, sum each `upvotes` value (`totalUpvotes`), sum each `awards` value (`totalAwards`)
+3. Sort `totalUpvotes` and `totalAwards` descending
+4. Limit only 5 top data to be selected
+##### Mongo Query
+```json
+db.getCollection('posts').aggregate([
+	{
+		"$group": {
+			"_id": "$author",
+			"totalUpvotes": { "$sum": "$upvotes" },
+			"totalAwards": { "$sum": "$awards" }
+		}
+	},
+	{
+		"$sort": {"totalUpvotes": -1, "totalAwards": -1 }
+	},
+	{
+		"$limit": 5
+	}
+])
+```
+
 ## Screenshots
 ### Containers Deployment
 ![Deployment](assets/deployment.png)
