@@ -1,0 +1,123 @@
+version: '3'
+
+networks:
+  wordpressnet:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.69.16.0/28
+
+services:
+  db:
+    image: mysql:5.7.27
+    container_name: db
+    hostname: db
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: wordpress
+    networks:
+      wordpressnet:
+        ipv4_address: 172.69.16.7
+
+  sentinel:
+    image: bitnami/redis-sentinel:latest
+    container_name: sentinel
+    hostname: sentinel
+    environment:
+      REDIS_MASTER_HOST: master
+      REDIS_PASSWORD: bdt19
+      REDISCLI_AUTH: bdt19
+    networks:
+      wordpressnet:
+        ipv4_address: 172.69.16.9
+
+  master:
+    image: bitnami/redis:latest
+    container_name: master
+    hostname: master
+    environment:
+      REDIS_REPLICATION_MODE: master
+      REDIS_PASSWORD: bdt19
+      REDISCLI_AUTH: bdt19
+    networks:
+      wordpressnet:
+        ipv4_address: 172.69.16.9
+
+  slave1:
+    image: bitnami/redis:latest
+    container_name: slave1
+    hostname: slave1
+    environment:
+      REDIS_REPLICATION_MODE: slave
+      REDIS_MASTER_HOST: master
+      REDIS_MASTER_PORT_NUMBER: 6379
+      REDIS_MASTER_PASSWORD: bdt19
+      REDIS_PASSWORD: bdt19
+      REDISCLI_AUTH: bdt19
+    depends_on:
+      - master
+    networks:
+      wordpressnet:
+        ipv4_address: 172.69.16.10
+
+  slave2:
+    image: bitnami/redis:latest
+    container_name: slave2
+    hostname: slave2
+    environment:
+      REDIS_REPLICATION_MODE: slave
+      REDIS_MASTER_HOST: master
+      REDIS_MASTER_PORT_NUMBER: 6379
+      REDIS_MASTER_PASSWORD: bdt19
+      REDIS_PASSWORD: bdt19
+      REDISCLI_AUTH: bdt19
+    depends_on:
+      - master
+    networks:
+      wordpressnet:
+        ipv4_address: 172.69.16.11
+
+  web:
+    image: wordpress:5.3.0-apache
+    container_name: web
+    hostname: web
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_TABLE_PREFIX: wp_
+      WORDPRESS_CONFIG_EXTRA: |
+        define('WP_REDIS_HOST', 'cache');
+        define('WP_REDIS_PASSWORD', 'bdt19');
+        define('WP_REDIS_CLIENT', 'predis');        
+    depends_on:
+      - db
+      - master
+      - slave1
+      - slave2
+    ports:
+      - 8069:80
+    networks:
+      wordpressnet:
+        ipv4_address: 172.69.16.6
+  
+  web_nocache:
+    image: wordpress:5.3.0-apache
+    container_name: web_nocache
+    hostname: web_nocache
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
+      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_TABLE_PREFIX: wp_
+    depends_on:
+      - db
+    ports:
+      - 8070:80
+    networks:
+      wordpressnet:
+        ipv4_address: 172.69.16.7
