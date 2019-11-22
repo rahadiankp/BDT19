@@ -5,7 +5,7 @@ networks:
     driver: bridge
     ipam:
       config:
-        - subnet: 172.69.16.0/28
+        - subnet: 172.69.16.0/27
 
 services:
   db:
@@ -19,66 +19,8 @@ services:
       MYSQL_PASSWORD: wordpress
     networks:
       wordpressnet:
-        ipv4_address: 172.69.16.7
-
-  sentinel:
-    image: bitnami/redis-sentinel:latest
-    container_name: sentinel
-    hostname: sentinel
-    environment:
-      REDIS_MASTER_HOST: master
-      REDIS_PASSWORD: bdt19
-      REDISCLI_AUTH: bdt19
-    networks:
-      wordpressnet:
-        ipv4_address: 172.69.16.9
-
-  master:
-    image: bitnami/redis:latest
-    container_name: master
-    hostname: master
-    environment:
-      REDIS_REPLICATION_MODE: master
-      REDIS_PASSWORD: bdt19
-      REDISCLI_AUTH: bdt19
-    networks:
-      wordpressnet:
-        ipv4_address: 172.69.16.9
-
-  slave1:
-    image: bitnami/redis:latest
-    container_name: slave1
-    hostname: slave1
-    environment:
-      REDIS_REPLICATION_MODE: slave
-      REDIS_MASTER_HOST: master
-      REDIS_MASTER_PORT_NUMBER: 6379
-      REDIS_MASTER_PASSWORD: bdt19
-      REDIS_PASSWORD: bdt19
-      REDISCLI_AUTH: bdt19
-    depends_on:
-      - master
-    networks:
-      wordpressnet:
-        ipv4_address: 172.69.16.10
-
-  slave2:
-    image: bitnami/redis:latest
-    container_name: slave2
-    hostname: slave2
-    environment:
-      REDIS_REPLICATION_MODE: slave
-      REDIS_MASTER_HOST: master
-      REDIS_MASTER_PORT_NUMBER: 6379
-      REDIS_MASTER_PASSWORD: bdt19
-      REDIS_PASSWORD: bdt19
-      REDISCLI_AUTH: bdt19
-    depends_on:
-      - master
-    networks:
-      wordpressnet:
-        ipv4_address: 172.69.16.11
-
+        ipv4_address: 172.69.16.8
+  
   web:
     image: wordpress:5.3.0-apache
     container_name: web
@@ -90,14 +32,11 @@ services:
       WORDPRESS_DB_NAME: wordpress
       WORDPRESS_TABLE_PREFIX: wp_
       WORDPRESS_CONFIG_EXTRA: |
-        define('WP_REDIS_HOST', 'cache');
-        define('WP_REDIS_PASSWORD', 'bdt19');
+        define('WP_CACHE_KEY_SALT', 'bdt19.com');
+        define('WP_CACHE', true);
+        define('WP_REDIS_SENTINEL', 'mymaster');
         define('WP_REDIS_CLIENT', 'predis');        
-    depends_on:
-      - db
-      - master
-      - slave1
-      - slave2
+        define('WP_REDIS_SERVERS', ['tcp://wordpress-redis_sentinel_1:26379/?alias=sen1', 'tcp://wordpress-redis_sentinel_2:26379/?alias=sen2', 'tcp://wordpress-redis_sentinel_3:26379/?alias=sen3']);      
     ports:
       - 8069:80
     networks:
@@ -112,12 +51,41 @@ services:
       WORDPRESS_DB_HOST: db
       WORDPRESS_DB_USER: wordpress
       WORDPRESS_DB_PASSWORD: wordpress
-      WORDPRESS_DB_NAME: wordpress
+      WORDPRESS_DB_NAME: wordpress_nocache
       WORDPRESS_TABLE_PREFIX: wp_
-    depends_on:
-      - db
     ports:
       - 8070:80
     networks:
       wordpressnet:
         ipv4_address: 172.69.16.7
+
+  master:
+    image: bitnami/redis:latest
+    container_name: redis-master
+    hostname: redis-master
+    environment:
+      REDIS_REPLICATION_MODE: master
+      ALLOW_EMPTY_PASSWORD: 'yes'
+    networks:
+      wordpressnet:
+        ipv4_address: 172.69.16.9
+
+  slave:
+    image: bitnami/redis:latest
+    environment:
+      REDIS_REPLICATION_MODE: slave
+      REDIS_MASTER_HOST: redis-master
+      ALLOW_EMPTY_PASSWORD: 'yes'
+    depends_on:
+      - master
+    networks:
+      - wordpressnet
+
+  sentinel:
+    image: bitnami/redis-sentinel:latest
+    environment:
+      REDIS_MASTER_HOST: redis-master
+    depends_on:
+      - master
+    networks:
+      - wordpressnet
