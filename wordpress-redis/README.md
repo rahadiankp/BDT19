@@ -29,5 +29,20 @@ docker-compose up -d master
 ```
 5. Deploy 2 Redis Slaves and 3 Redis Sentinel by using `--scale` options
 ```powershell
-docker-compose up -d --scale sentinel=3 --scale slave=2 sentinel slave
+docker-compose up -d --no-deps --scale sentinel=3 --scale slave=2 sentinel slave
 ```
+6. Test environment is ready.
+## Wordpress Redis Cache
+Using Wordpress plugin Redis Cache Object ([redis-cache](https://wordpress.org/plugins/redis-cache/)), Wordpress can store cache into Redis instance. Install this plugin only on Wordpress with cache enabled container.  
+To install, simply go to *Plugins* > *Add New* > *Search for `redis`* > *Install* > *Activate*.  
+Edit `wp-config.php`, and add lines below to the file:
+```php
+define('WP_CACHE_KEY_SALT', 'bdt19.com');
+define('WP_CACHE', true);
+define('WP_REDIS_SENTINEL', 'mymaster');
+define('WP_REDIS_CLIENT', 'predis');
+define('WP_REDIS_SERVERS', ['tcp://wordpress-redis_sentinel_1:26379/?alias=sen1', 'tcp://wordpress-redis_sentinel_2:26379/?alias=sen2', 'tcp://wordpress-redis_sentinel_3:26379/?alias=sen3']);
+```
+Go to *Settings* > *Redis*, and you will see screen like below
+![Wordpress Redis Cache](assets/wp_redis_cache.png)
+Now Redis Object Cache is ready to cache Wordpress stuffs
