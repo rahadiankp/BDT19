@@ -43,6 +43,10 @@ define('WP_REDIS_SENTINEL', 'mymaster');
 define('WP_REDIS_CLIENT', 'predis');
 define('WP_REDIS_SERVERS', ['tcp://wordpress-redis_sentinel_1:26379/?alias=sen1', 'tcp://wordpress-redis_sentinel_2:26379/?alias=sen2', 'tcp://wordpress-redis_sentinel_3:26379/?alias=sen3']);
 ```
+There is `predis` bug where Redis Replication using Sentinel always encounters an error. To fix the bug, simply execute:
+```powershell
+.\fix_predis.ps1
+```
 Go to *Settings* > *Redis*, and you will see screen like below
 ![Wordpress Redis Cache](assets/wp_redis_cache.png)
 Now Redis Object Cache is ready to cache Wordpress stuffs
