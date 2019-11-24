@@ -50,7 +50,22 @@ Go to *Settings* > *Redis*, and you will see screen like below
 ![Wordpress Redis Cache](assets/wp_redis_cache.png)
 Now Redis Object Cache is ready to cache Wordpress stuffs
 ## Wordpress Redis Caching Performance
-TO BE ADDED
+### Test Briefing
+The following Wordpress post is used as performance test.
+![Post](assets/test_page.png)
+There will be 3 performance tests classified by numbers of connections:
+- 100 Connections (10 Threads, 10 loops/thread)
+- 250 Connections (10 Threads, 25 loops/thread)
+- 500 Connections (10 Threads, 50 loops/thread)
+### Test Result Graph
+#### 100 Connections
+![100 Conns](assets/test_result_100_conns.png)
+#### 250 Connections
+![250 Conns](assets/test_result_250_conns.png)
+#### 500 Connections
+![500 Conns](assets/test_result_500_conns.png)
+### Test Conclusion
+Based on the graphs above, weirdly enough, the load time required by Wordpress without Redis caching is faster than the one with Redis caching enabled.
 ## Sentinel Failover Simulation
 In this simulation, a Redis replication group consists of 1 Redis master and 3 Redis slaves. Each slave is assigned to `172.169.16.2`, `172.69.16.3`, `172.69.16.4`. First, stop `master` container.
 ```powershell
