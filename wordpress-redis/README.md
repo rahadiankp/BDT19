@@ -50,3 +50,18 @@ There is `predis` bug where Redis Replication using Sentinel always encounters a
 Go to *Settings* > *Redis*, and you will see screen like below
 ![Wordpress Redis Cache](assets/wp_redis_cache.png)
 Now Redis Object Cache is ready to cache Wordpress stuffs
+## Sentinel Failover Simulation
+In this simulation, a Redis replication group consists of 1 Redis master and 3 Redis slaves. Each slave is assigned to `172.169.16.2`, `172.69.16.3`, `172.69.16.4`. First, stop `master` container.
+```powershell
+docker-compose stop master
+```
+Check Redis Sentinels' logs by executing:
+```powershell
+docker-compose logs sentinel
+```
+![Sentinels Detect Redis Master Down](assets/sentinel_detect_master_down.png)
+Sentinel_2 and Sentinel_3 detect that `172.69.16.9` (`master`) is down, and both Sentinel have reached the quorum that declares `master` is down. Sentinel_3 then elected to be the leader of available Sentinels.  
+![Sentinels Elect New Master](assets/sentinel_switch_master.png)
+Sentinel_3, elected as the leader, now initiate failover and try to elect and promote new master. Sentinel_3 elects and promotes `172.69.16.3` (`slave2`) as the new master. Now `master` is considered as slave, whilst `slave2` is now acting as master.  
+![Slave is Now Master](assets/slave_is_now_master.png)  
+Check replication information in `slave2`. `slave2` is now confirmed as master of the replication group.
