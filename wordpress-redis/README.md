@@ -164,7 +164,14 @@ There will be 3 performance tests classified by numbers of connections:
 #### 500 Connections
 ![500 Conns](assets/test_result_500_conns.png)
 ### Test Conclusion
-Based on the graphs above, weirdly enough, the load time required by Wordpress without Redis caching is faster than the one with Redis caching enabled.
+Based on the graphs above, weirdly enough, the load time required by Wordpress without Redis caching is faster than the one with Redis caching enabled. This is counter-intuitive, so what happened?  
+Let's monitor any GET/SET operation in current Redis master, by executing:
+```powershell
+docker-compose exec master redis-cli monitor | Select-String -Pattern "(S|G)ET"
+```
+And this is what happened when a page is requested/loaded
+![Redis Overhead](assets/redis_overhead.png)
+Only one page is requested, but the plugin hits Redis so many times. Every response sent by Redis contains overhead payloads, this is the root cause. With so many hits required by loading a single page, the plugin must process tons of Redis overhead + main data. In this case, Redis loses; on the other hand, fetching directly from MySQL requires less overheads than Redis, therefore MySQL wins in this case
 ## Sentinel Failover Simulation
 In this simulation, a Redis replication group consists of 1 Redis master and 3 Redis slaves. Each slave is assigned to `172.169.16.2`, `172.69.16.3`, `172.69.16.4`. First, stop `master` container.
 ```powershell
