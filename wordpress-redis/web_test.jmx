@@ -100,7 +100,6 @@
             </value>
           </objProp>
           <stringProp name="filename"></stringProp>
-          <boolProp name="ResultCollector.success_only_logging">true</boolProp>
         </ResultCollector>
         <hashTree/>
         <ResultCollector guiclass="RespTimeGraphVisualizer" testclass="ResultCollector" testname="Response Time Graph" enabled="true">
@@ -142,6 +141,7 @@
           <stringProp name="RespTimeGraph.graphtitle">Performance Test 100 Connections (10 Threads, 10 Loop)</stringProp>
           <intProp name="RespTimeGraph.linestrockwidth">1</intProp>
           <intProp name="RespTimeGraph.lineshapepoint">3</intProp>
+          <stringProp name="RespTimeGraph.xaxistimeformat">mm:ss</stringProp>
         </ResultCollector>
         <hashTree/>
       </hashTree>
@@ -167,7 +167,7 @@
           <stringProp name="HTTPSampler.port">8069</stringProp>
           <stringProp name="HTTPSampler.protocol">http</stringProp>
           <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-          <stringProp name="HTTPSampler.path">/?p=5</stringProp>
+          <stringProp name="HTTPSampler.path">/?p=1</stringProp>
           <stringProp name="HTTPSampler.method">GET</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
           <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -187,7 +187,7 @@
           <stringProp name="HTTPSampler.port">8070</stringProp>
           <stringProp name="HTTPSampler.protocol">http</stringProp>
           <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-          <stringProp name="HTTPSampler.path">/?p=5</stringProp>
+          <stringProp name="HTTPSampler.path">/?p=1</stringProp>
           <stringProp name="HTTPSampler.method">GET</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
           <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -233,7 +233,6 @@
             </value>
           </objProp>
           <stringProp name="filename"></stringProp>
-          <boolProp name="ResultCollector.success_only_logging">true</boolProp>
         </ResultCollector>
         <hashTree/>
         <ResultCollector guiclass="RespTimeGraphVisualizer" testclass="ResultCollector" testname="Response Time Graph" enabled="true">
@@ -272,9 +271,10 @@
           </objProp>
           <stringProp name="filename"></stringProp>
           <stringProp name="RespTimeGraph.interval">100</stringProp>
-          <stringProp name="RespTimeGraph.graphtitle">Performance Test 250 Connections (250 Threads, 1 Loop)</stringProp>
+          <stringProp name="RespTimeGraph.graphtitle">Performance Test 250 Connections (10 Threads, 25 Loop)</stringProp>
           <intProp name="RespTimeGraph.linestrockwidth">1</intProp>
           <intProp name="RespTimeGraph.lineshapepoint">1</intProp>
+          <stringProp name="RespTimeGraph.xaxistimeformat">mm:ss</stringProp>
         </ResultCollector>
         <hashTree/>
       </hashTree>
@@ -300,7 +300,7 @@
           <stringProp name="HTTPSampler.port">8069</stringProp>
           <stringProp name="HTTPSampler.protocol">http</stringProp>
           <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-          <stringProp name="HTTPSampler.path">/?p=5</stringProp>
+          <stringProp name="HTTPSampler.path">/?p=1</stringProp>
           <stringProp name="HTTPSampler.method">GET</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
           <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -320,7 +320,7 @@
           <stringProp name="HTTPSampler.port">8070</stringProp>
           <stringProp name="HTTPSampler.protocol">http</stringProp>
           <stringProp name="HTTPSampler.contentEncoding"></stringProp>
-          <stringProp name="HTTPSampler.path">/?p=5</stringProp>
+          <stringProp name="HTTPSampler.path">/?p=1</stringProp>
           <stringProp name="HTTPSampler.method">GET</stringProp>
           <boolProp name="HTTPSampler.follow_redirects">false</boolProp>
           <boolProp name="HTTPSampler.auto_redirects">false</boolProp>
@@ -366,7 +366,6 @@
             </value>
           </objProp>
           <stringProp name="filename"></stringProp>
-          <boolProp name="ResultCollector.success_only_logging">true</boolProp>
         </ResultCollector>
         <hashTree/>
         <ResultCollector guiclass="RespTimeGraphVisualizer" testclass="ResultCollector" testname="Response Time Graph" enabled="true">
@@ -405,9 +404,10 @@
           </objProp>
           <stringProp name="filename"></stringProp>
           <stringProp name="RespTimeGraph.interval">100</stringProp>
-          <stringProp name="RespTimeGraph.graphtitle">Performance Test 250 Connections (10 Threads, 50 Loop)</stringProp>
           <intProp name="RespTimeGraph.linestrockwidth">1</intProp>
           <intProp name="RespTimeGraph.lineshapepoint">2</intProp>
+          <stringProp name="RespTimeGraph.xaxistimeformat">mm:ss</stringProp>
+          <stringProp name="RespTimeGraph.graphtitle">Performance Test 500 Connections (10 Threads, 50 Loop)</stringProp>
         </ResultCollector>
         <hashTree/>
       </hashTree>
