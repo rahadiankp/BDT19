@@ -1,37 +1,36 @@
 ## Architecture
 ![Architecture](assets/architecture.png)
 ### Network and IP Assignments
-Subnet: `172.69.16.0/27`
-- Wordpress (Redis cache enabled): `172.69.16.6`
-- Wordpress (No cache): `172.69.16.7`
-- MySQL Database: `172.69.16.8`
-- Redis Master: `172.69.16.9`
-- Redis Slaves: any unassigned IPs
-- Sentinels: any unassigned IPs
+2 distinct networks will be used to avoid congestion due to JMeter test
+- Subnet: `172.69.16.0/27` (Wordpress with Redis)
+  - Wordpress (Redis cache enabled): `172.69.16.6`
+  - MySQL Database: `172.69.16.7`
+  - Redis Master: `172.69.16.9`
+  - Redis Slaves: any unassigned IPs
+  - Sentinels: any unassigned IPs
+- Subnet: `172.70.16.0/29` (Wordpress without Redis)
+  - Wordpress (No cache): any unassigned IPs
+  - MySQL Database: any unassigned IPs
 ## How-To Start Containers
-1. Deploy `db` container first. Wordpress depends on MySQL instance 
+1. Deploy `db` and `db_nocache` container first. Wordpress depends on MySQL instance 
 ```powershell
 docker-compose up -d db
 ```
 **NOTE**: Check if MySQL service is already up by executing `docker-compose logs db`
 
-2. After MySQL is up, create new database for Wordpress without cache. Database for Wordpress with cache is automatically created
-```powershell
-.\create_db_web_nocache.ps1
-```
-3. Deploy 2 Wordpress instances, `web` and `web_nocache`
+2. Deploy 2 Wordpress instances, `web` and `web_nocache`
 ```powershell
 docker-compose up -d web web_nocache
 ```
-4. Deploy Redis Master
+3. Deploy Redis Master
 ```powershell
 docker-compose up -d master
 ```
-5. Deploy 2 Redis Slaves and 3 Redis Sentinel by using `--scale` options
+4. Deploy 2 Redis Slaves and 3 Redis Sentinel by using `--scale` options
 ```powershell
 docker-compose up -d --no-deps --scale sentinel=3 --scale slave=2 sentinel slave
 ```
-6. Test environment is ready.
+5. Test environment is ready.
 ## Wordpress Redis Cache
 Using Wordpress plugin Redis Cache Object ([redis-cache](https://wordpress.org/plugins/redis-cache/)), Wordpress can store cache into Redis instance. Install this plugin only on Wordpress with cache enabled container.  
 To install, simply go to *Plugins* > *Add New* > *Search for `redis`* > *Install* > *Activate*.  
@@ -50,6 +49,8 @@ There is `predis` bug where Redis Replication using Sentinel always encounters a
 Go to *Settings* > *Redis*, and you will see screen like below
 ![Wordpress Redis Cache](assets/wp_redis_cache.png)
 Now Redis Object Cache is ready to cache Wordpress stuffs
+## Wordpress Redis Caching Performance
+TO BE ADDED
 ## Sentinel Failover Simulation
 In this simulation, a Redis replication group consists of 1 Redis master and 3 Redis slaves. Each slave is assigned to `172.169.16.2`, `172.69.16.3`, `172.69.16.4`. First, stop `master` container.
 ```powershell
