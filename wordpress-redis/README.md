@@ -4,7 +4,7 @@
 ## How-To Start Containers
 1. Deploy `db` and `db_nocache` container first. Wordpress depends on MySQL instance 
 ```powershell
-docker-compose up -d db
+docker-compose up -d db db_nocache
 ```
 **NOTE**: Check if MySQL service is already up by executing `docker-compose logs db`
 
