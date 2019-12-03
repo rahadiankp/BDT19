@@ -29,9 +29,9 @@ scrape_configs:
     honor_labels: true  # Do not overwrite job & instance labels.
     static_configs:
     - targets:
-      - '172.80.16.2:9100'
-      - '172.80.16.3:9100'
-      - '172.80.16.4:9100'
+      - '172.80.16.2:2379'
+      - '172.80.16.3:2379'
+      - '172.80.16.4:2379'
 
   - job_name: 'tikv'
     honor_labels: true
