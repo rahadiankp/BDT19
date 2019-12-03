@@ -1,0 +1,3 @@
+FROM pingcap/tikv:latest
+
+COPY node_exporter /node_exporter

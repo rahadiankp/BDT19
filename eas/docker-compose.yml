@@ -1,0 +1,160 @@
+version: '3'
+
+networks:
+  tidbnet:
+    driver: bridge
+    ipam:
+      config:
+        # pd 16.{2..4}
+        # tikv 16.{8..10}
+        # tidb 6
+        # prometheus 12
+        # grafana 14
+        - subnet: 172.80.16.0/28
+
+services:
+  pd1:
+    image: bdt19/pd:latest
+    container_name: pd1
+    hostname: pd1
+    entrypoint: >
+      ash -c 
+      "/node_exporter & /pd-server
+        --name=pd1
+        --client-urls=http://0.0.0.0:2379
+        --peer-urls=http://0.0.0.0:2380
+        --advertise-client-urls=http://172.80.16.2:2379
+        --advertise-peer-urls=http://172.80.16.2:2380 
+        --initial-cluster=pd1=http://172.80.16.2:2380,pd2=http://172.80.16.3:2380,pd3=http://172.80.16.4:2380
+      "
+    networks:
+      tidbnet:
+        ipv4_address: 172.80.16.2
+
+  pd2:
+    image: bdt19/pd:latest
+    container_name: pd2
+    hostname: pd2
+    entrypoint: >
+      ash -c
+      "/node_exporter & /pd-server
+        --name=pd2
+        --client-urls=http://0.0.0.0:2379
+        --peer-urls=http://0.0.0.0:2380
+        --advertise-client-urls=http://172.80.16.3:2379
+        --advertise-peer-urls=http://172.80.16.3:2380 
+        --initial-cluster=pd1=http://172.80.16.2:2380,pd2=http://172.80.16.3:2380,pd3=http://172.80.16.4:2380
+      "
+    networks:
+      tidbnet:
+        ipv4_address: 172.80.16.3
+
+  pd3:
+    image: bdt19/pd:latest
+    container_name: pd3
+    hostname: pd3
+    entrypoint: >
+      ash -c
+      "/node_exporter & /pd-server
+        --name=pd3
+        --client-urls=http://0.0.0.0:2379
+        --peer-urls=http://0.0.0.0:2380
+        --advertise-client-urls=http://172.80.16.3:2379
+        --advertise-peer-urls=http://172.80.16.3:2380 
+        --initial-cluster=pd1=http://172.80.16.2:2380,pd2=http://172.80.16.3:2380,pd3=http://172.80.16.4:2380
+      "
+    networks:
+      tidbnet:
+        ipv4_address: 172.80.16.4
+
+  tikv1:
+    image: bdt19/tikv:latest
+    container_name: tikv1
+    hostname: tikv1
+    entrypoint: >
+      ash -c
+      "/node_exporter & /tikv-server
+        --addr=0.0.0.0:20160
+        --advertise-addr=172.80.16.8:20160
+        --pd=172.80.16.2:2379,172.80.16.3:2379,172.80.16.4:2379
+      " 
+    networks:
+      tidbnet:
+        ipv4_address: 172.80.16.8
+
+  tikv2:
+    image: bdt19/tikv:latest
+    container_name: tikv2
+    hostname: tikv2
+    entrypoint: >
+      ash -c
+      "/node_exporter & /tikv-server
+        --addr=0.0.0.0:20160
+        --advertise-addr=172.80.16.8:20160
+        --pd=172.80.16.2:2379,172.80.16.3:2379,172.80.16.4:2379
+      " 
+    networks:
+      tidbnet:
+        ipv4_address: 172.80.16.9
+
+  tikv3:
+    image: bdt19/tikv:latest
+    container_name: tikv3
+    hostname: tikv3
+    entrypoint: >
+      ash -c
+      "/node_exporter & /tikv-server
+        --addr=0.0.0.0:20160
+        --advertise-addr=172.80.16.8:20160
+        --pd=172.80.16.2:2379,172.80.16.3:2379,172.80.16.4:2379
+      " 
+    networks:
+      tidbnet:
+        ipv4_address: 172.80.16.10
+
+  tidb:
+    image: bdt19/tidb:latest
+    container_name: tidb
+    hostname: tidb
+    entrypoint: >
+      ash -c 
+      "/node_exporter & /tidb-server
+        --store=tikv
+        --path=172.80.16.2:2379,172.80.16.3:2379,172.80.16.4:2379
+      "
+    ports:
+      - 3306:4000
+      - 10080:10080
+    networks:
+      tidbnet:
+        ipv4_address: 172.80.16.6
+
+  prometheus:
+    image: bdt19/prometheus:latest
+    container_name: prometheus
+    hostname: prometheus
+    networks:
+      tidbnet:
+        ipv4_address: 172.80.16.12
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    hostname: grafana
+    environment:
+      - GF_SERVER_HTTP_PORT=3000
+      - GF_SERVER_DOMAIN=172.80.16.14
+      - GF_ANALYTICS_CHECK_FOR_UPDATES=true
+      - GF_SECURITY_ADMIN_USER=receh
+      - GF_SECURITY_ADMIN_PASSWORD=receh
+      - GF_LOG_MODE=file
+      - GF_LOG_FILE_LEVEL=info
+      - GF_LOG_FILE_FORMAT=text
+      - GF_DASHBOARDS_JSON_ENABLED=false
+      - GF_DASHBOARDS_JSON_PATH=./data/dashboards
+      - GF_GRAFANA_NET=https://grafana.net
+    ports:
+      - 3000:3000
+    networks:
+      tidbnet:
+        ipv4_address: 172.80.16.14
