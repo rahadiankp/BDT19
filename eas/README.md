@@ -168,4 +168,107 @@ After all TiDB services, Prometheus, and Grafana are up, visit `localhost:3000` 
 #### PD Monitor
 ![Grafana PD](assets/grafana_pd.png)
 ### Performance Test
+#### Application Test
+#### TiDB Test
+Using [Sysbench](https://github.com/akopytov/sysbench) to test TiDB performance. The testname used for this test is `oltp_point_select`. Number of Placement Drivers will act as control variable. Test will be conducted 3 times, with 1 PD, 2 PDs, and 3 PDs.  
+  
+**NOTE**: As Sysbench is not supported natively in Windows, I had to execute the tests on Windows Subsystem Linux environment. Additional overheads are expected and may impact the test result.  
+  
+First, prepare the test environment on DB side. Execute this:
+```bash
+sysbench /usr/share/sysbench/oltp_point_select.lua --threads=8 --mysql-host=127.0.0.1 --mysql-user=root --mysql-port=3306 --tables=4 --table-size=1000 prepare
+```
+![Sysbench Prepare](assets/sysbench_prepare.png)
+Next, execute line below to run the test:
+```bash
+sysbench /usr/share/sysbench/oltp_point_select.lua --threads=8 --mysql-host=127.0.0.1 --mysql-user=root --mysql-port=3306 --tables=4 --table-size=1000 run
+```
+##### Test Result with 1 Placement Driver
+```
+
+SQL statistics:
+    queries performed:
+        read:                            31968
+        write:                           0
+        other:                           0
+        total:                           31968
+    transactions:                        31968  (3194.89 per sec.)
+    queries:                             31968  (3194.89 per sec.)
+    ignored errors:                      0      (0.00 per sec.)
+    reconnects:                          0      (0.00 per sec.)
+
+General statistics:
+    total time:                          10.0039s
+    total number of events:              31968
+
+Latency (ms):
+         min:                                    0.88
+         avg:                                    2.50
+         max:                                   30.44
+         95th percentile:                        4.82
+         sum:                                79821.47
+
+Threads fairness:
+    events (avg/stddev):           3996.0000/24.38
+    execution time (avg/stddev):   9.9777/0.00
+```
+##### Test Result with 2 Placement Drivers
+```
+SQL statistics:
+    queries performed:
+        read:                            31736
+        write:                           0
+        other:                           0
+        total:                           31736
+    transactions:                        31736  (3171.10 per sec.)
+    queries:                             31736  (3171.10 per sec.)
+    ignored errors:                      0      (0.00 per sec.)
+    reconnects:                          0      (0.00 per sec.)
+
+General statistics:
+    total time:                          10.0057s
+    total number of events:              31736
+
+Latency (ms):
+         min:                                    0.95
+         avg:                                    2.52
+         max:                                   26.29
+         95th percentile:                        4.82
+         sum:                                79819.31
+
+Threads fairness:
+    events (avg/stddev):           3967.0000/25.20
+    execution time (avg/stddev):   9.9774/0.00
+```
+##### Test Result with 3 Placement Drivers
+```
+SQL statistics:
+    queries performed:
+        read:                            32222
+        write:                           0
+        other:                           0
+        total:                           32222
+    transactions:                        32222  (3219.82 per sec.)
+    queries:                             32222  (3219.82 per sec.)
+    ignored errors:                      0      (0.00 per sec.)
+    reconnects:                          0      (0.00 per sec.)
+
+General statistics:
+    total time:                          10.0053s
+    total number of events:              32222
+
+Latency (ms):
+         min:                                    0.91
+         avg:                                    2.48
+         max:                                   39.03
+         95th percentile:                        4.57
+         sum:                                79822.60
+
+Threads fairness:
+    events (avg/stddev):           4027.7500/20.91
+    execution time (avg/stddev):   9.9778/0.00
+
+```
+##### Test Conclusion
+The result is rather inconclusive. There is barely significant difference on the number of executed queries per second.
 ### Failover Simulation
