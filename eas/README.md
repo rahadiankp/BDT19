@@ -68,6 +68,8 @@ services:
         ipv4_address: 172.80.16.6
   ...
 ```
+Aside from regular TiDB server startup and its parameter, `/node_exporter` is also run in the background. That process is for node monitoring. Above technique is dirty way to run 2 background process in one container. Port `3306` is forwarded to port `4000`, easier application configuration. Port `10080` is exposed for test purpose only.  
+Parameter `--path` is pointing to deployed Placement Driver containers, and the storing type is `tikv`.
 ### TiKV
 ```yaml
 services:
@@ -90,6 +92,7 @@ services:
         ipv4_address: 172.80.16.8
   ...
 ```
+Same technique as TiDB on node exporter process. TiKV server is configured for its address and advertise address; and parameter that points to available Placement Drivers.
 ### Placement Driver
 ```yaml
 services:
@@ -114,6 +117,7 @@ services:
         ipv4_address: 172.80.16.2
   ...
 ```
+Same technique as TiDB on node exporter process. PD requires peer and client urls, the former is for communication inter-PD and the latter is for client that wants to connect to PD. And initial available PDs.
 ### Prometheus
 ```yaml
 services:
@@ -127,6 +131,7 @@ services:
         ipv4_address: 172.80.16.12
   ...
 ```
+No further configuration for Prometheus, aside from Prometheus startup configuration [`prometheus.yml`](img/prometheus.yml)
 ### Grafana
 ```yaml
 services:
@@ -154,3 +159,4 @@ services:
         ipv4_address: 172.80.16.14
   ...
 ```
+Grafana configuration can be configured by defining container enviroments like above. It is all related to Grafana website deployment and logging.
