@@ -160,3 +160,13 @@ services:
   ...
 ```
 Grafana configuration can be configured by defining container enviroments like above. It is all related to Grafana website deployment and logging.
+### Nodes Monitoring
+After all TiDB services, Prometheus, and Grafana are up, visit `localhost:3000` to access Grafana. Follow steps on this [page](https://pingcap.com/docs/stable/how-to/monitor/monitor-a-cluster/#deploy-prometheus-and-grafana) to configure TiDB monitoring in Grafana. Below are the screentshots.
+#### TiDB Monitor
+![Grafana TiDB](assets/grafana_tidb.png)
+#### TiKV Monitor
+![Grafana TiKV](assets/grafana_tikv.png)
+#### PD Monitor
+![Grafana PD](assets/grafana_pd.png)
+### Performance Test
+### Failover Simulation
