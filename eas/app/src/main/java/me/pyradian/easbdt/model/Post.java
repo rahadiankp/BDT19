@@ -1,6 +1,9 @@
 package me.pyradian.easbdt.model;
 
 
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.id.Assigned;
+
 import javax.persistence.*;
 
 @Entity
@@ -8,8 +11,7 @@ import javax.persistence.*;
 public class Post {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
-    @Column(name = "id")
+    @Column(name = "id", length = 6)
     private String id;
 
     @Column(name = "author")
@@ -117,5 +119,21 @@ public class Post {
 
     public void setCreated(long created) {
         this.created = created;
+    }
+
+    @Override
+    public String toString() {
+        return "Post{" +
+                "id='" + id + '\'' +
+                ", author='" + author + '\'' +
+                ", title='" + title + '\'' +
+                ", subreddit='" + subreddit + '\'' +
+                ", upvotes=" + upvotes +
+                ", downvotes=" + downvotes +
+                ", score=" + score +
+                ", awards=" + awards +
+                ", oc=" + oc +
+                ", created=" + created +
+                '}';
     }
 }
