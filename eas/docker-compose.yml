@@ -27,6 +27,8 @@ services:
         --advertise-peer-urls=http://172.80.16.2:2380 
         --initial-cluster=pd1=http://172.80.16.2:2380,pd2=http://172.80.16.3:2380,pd3=http://172.80.16.4:2380
       "
+    ports:
+      - 2379:2379
     networks:
       tidbnet:
         ipv4_address: 172.80.16.2
@@ -77,7 +79,9 @@ services:
         --addr=0.0.0.0:20160
         --advertise-addr=172.80.16.8:20160
         --pd=172.80.16.2:2379,172.80.16.3:2379,172.80.16.4:2379
-      " 
+      "
+    ports:
+      - 20160:20160
     networks:
       tidbnet:
         ipv4_address: 172.80.16.8
