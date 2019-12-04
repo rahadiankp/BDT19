@@ -281,7 +281,7 @@ First, we check who is the current leader by executing:
 curl http://127.0.0.1:2379/pd/api/v1/members
 ```
 **NOTE**: We utilize `pd1` exposed port 2379  
-![Current Leader](assets/current_leader.png)
+![Current Leader](assets/current_leader.png)  
 Stop the leader node `pd2`
 ```powershell
 docker-compose stop pd2
@@ -290,5 +290,5 @@ Wait for a moment, let the rest of deployed PDs do the communication to elect ne
 ```powershell
 curl http://127.0.0.1:2379/pd/api/v1/members
 ```
-![New Leader](assets/new_leader.png)
+![New Leader](assets/new_leader.png)  
 And now, `pd1` is the new leader of PDs.
