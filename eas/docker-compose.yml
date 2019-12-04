@@ -17,10 +17,8 @@ services:
     image: bdt19/pd:latest
     container_name: pd1
     hostname: pd1
-    entrypoint: >
-      ash -c 
-      "/node_exporter & /pd-server
-        --name=pd1
+    command:
+      " --name=pd1
         --client-urls=http://0.0.0.0:2379
         --peer-urls=http://0.0.0.0:2380
         --advertise-client-urls=http://172.80.16.2:2379
@@ -37,10 +35,8 @@ services:
     image: bdt19/pd:latest
     container_name: pd2
     hostname: pd2
-    entrypoint: >
-      ash -c
-      "/node_exporter & /pd-server
-        --name=pd2
+    command:
+      " --name=pd2
         --client-urls=http://0.0.0.0:2379
         --peer-urls=http://0.0.0.0:2380
         --advertise-client-urls=http://172.80.16.3:2379
@@ -55,14 +51,12 @@ services:
     image: bdt19/pd:latest
     container_name: pd3
     hostname: pd3
-    entrypoint: >
-      ash -c
-      "/node_exporter & /pd-server
-        --name=pd3
+    command:
+      " --name=pd3
         --client-urls=http://0.0.0.0:2379
         --peer-urls=http://0.0.0.0:2380
-        --advertise-client-urls=http://172.80.16.3:2379
-        --advertise-peer-urls=http://172.80.16.3:2380 
+        --advertise-client-urls=http://172.80.16.4:2379
+        --advertise-peer-urls=http://172.80.16.4:2380 
         --initial-cluster=pd1=http://172.80.16.2:2380,pd2=http://172.80.16.3:2380,pd3=http://172.80.16.4:2380
       "
     networks:
@@ -73,10 +67,8 @@ services:
     image: bdt19/tikv:latest
     container_name: tikv1
     hostname: tikv1
-    entrypoint: >
-      ash -c
-      "/node_exporter & /tikv-server
-        --addr=0.0.0.0:20160
+    command:
+      " --addr=0.0.0.0:20160
         --advertise-addr=172.80.16.8:20160
         --pd=172.80.16.2:2379,172.80.16.3:2379,172.80.16.4:2379
       "
@@ -90,11 +82,9 @@ services:
     image: bdt19/tikv:latest
     container_name: tikv2
     hostname: tikv2
-    entrypoint: >
-      ash -c
-      "/node_exporter & /tikv-server
-        --addr=0.0.0.0:20160
-        --advertise-addr=172.80.16.8:20160
+    command:
+      " --addr=0.0.0.0:20160
+        --advertise-addr=172.80.16.9:20160
         --pd=172.80.16.2:2379,172.80.16.3:2379,172.80.16.4:2379
       " 
     networks:
@@ -105,11 +95,9 @@ services:
     image: bdt19/tikv:latest
     container_name: tikv3
     hostname: tikv3
-    entrypoint: >
-      ash -c
-      "/node_exporter & /tikv-server
-        --addr=0.0.0.0:20160
-        --advertise-addr=172.80.16.8:20160
+    command:
+      " --addr=0.0.0.0:20160
+        --advertise-addr=172.80.16.10:20160
         --pd=172.80.16.2:2379,172.80.16.3:2379,172.80.16.4:2379
       " 
     networks:
@@ -120,10 +108,8 @@ services:
     image: bdt19/tidb:latest
     container_name: tidb
     hostname: tidb
-    entrypoint: >
-      ash -c 
-      "/node_exporter & /tidb-server
-        --store=tikv
+    command:
+      " --store=tikv
         --path=172.80.16.2:2379,172.80.16.3:2379,172.80.16.4:2379
       "
     ports:
