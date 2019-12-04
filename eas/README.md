@@ -21,15 +21,19 @@ docker-compose up -d tikv1 tikv2 tikv3
 ```powershell
 docker-compose up -d tidb
 ```
-5. Deploy Prometheus
+5. Run `node_exporter` on each node by executing:
+```powershell
+.\run_node_exporter.ps1
+```
+6. Deploy Prometheus
 ```powershell
 docker-compose up -d prometheus
 ```
-6. Deploy Grafana
+7. Deploy Grafana
 ```powershell
 docker-compose up -d grafana
 ```
-7. Test environment is ready
+8. Test environment is ready
 ## `docker-compose.yml` Brief Explanation
 ### Networking
 ```yaml
@@ -54,10 +58,8 @@ services:
     image: bdt19/tidb:latest
     container_name: tidb
     hostname: tidb
-    entrypoint: >
-      ash -c 
-      "/node_exporter & /tidb-server
-        --store=tikv
+    command:
+      " --store=tikv
         --path=172.80.16.2:2379,172.80.16.3:2379,172.80.16.4:2379
       "
     ports:
@@ -68,7 +70,7 @@ services:
         ipv4_address: 172.80.16.6
   ...
 ```
-Aside from regular TiDB server startup and its parameter, `/node_exporter` is also run in the background. That process is for node monitoring. Above technique is dirty way to run 2 background process in one container. Port `3306` is forwarded to port `4000`, easier application configuration. Port `10080` is exposed for test purpose only.  
+Port `3306` is forwarded to port `4000`, easier application configuration. Port `10080` is exposed for test purpose only.  
 Parameter `--path` is pointing to deployed Placement Driver containers, and the storing type is `tikv`.
 ### TiKV
 ```yaml
@@ -78,10 +80,8 @@ services:
     image: bdt19/tikv:latest
     container_name: tikv1
     hostname: tikv1
-    entrypoint: >
-      ash -c
-      "/node_exporter & /tikv-server
-        --addr=0.0.0.0:20160
+    command:
+      " --addr=0.0.0.0:20160
         --advertise-addr=172.80.16.8:20160
         --pd=172.80.16.2:2379,172.80.16.3:2379,172.80.16.4:2379
       "
@@ -92,7 +92,7 @@ services:
         ipv4_address: 172.80.16.8
   ...
 ```
-Same technique as TiDB on node exporter process. TiKV server is configured for its address and advertise address; and parameter that points to available Placement Drivers.
+TiKV server is configured for its address and advertise address; and parameter that points to available Placement Drivers.
 ### Placement Driver
 ```yaml
 services:
@@ -100,10 +100,8 @@ services:
     image: bdt19/pd:latest
     container_name: pd1
     hostname: pd1
-    entrypoint: >
-      ash -c 
-      "/node_exporter & /pd-server
-        --name=pd1
+    command:
+      " --name=pd1
         --client-urls=http://0.0.0.0:2379
         --peer-urls=http://0.0.0.0:2380
         --advertise-client-urls=http://172.80.16.2:2379
@@ -111,13 +109,14 @@ services:
         --initial-cluster=pd1=http://172.80.16.2:2380,pd2=http://172.80.16.3:2380,pd3=http://172.80.16.4:2380
       "
     ports:
+      - 9100:9100
       - 2379:2379
     networks:
       tidbnet:
         ipv4_address: 172.80.16.2
   ...
 ```
-Same technique as TiDB on node exporter process. PD requires peer and client urls, the former is for communication inter-PD and the latter is for client that wants to connect to PD. And initial available PDs.
+PD requires peer and client urls, the former is for communication inter-PD and the latter is for client that wants to connect to PD. And initial available PDs.
 ### Prometheus
 ```yaml
 services:
@@ -160,3 +159,13 @@ services:
   ...
 ```
 Grafana configuration can be configured by defining container enviroments like above. It is all related to Grafana website deployment and logging.
+### Nodes Monitoring
+After all TiDB services, Prometheus, and Grafana are up, visit `localhost:3000` to access Grafana. Follow steps on this [page](https://pingcap.com/docs/stable/how-to/monitor/monitor-a-cluster/#deploy-prometheus-and-grafana) to configure TiDB monitoring in Grafana. Below are the screentshots.
+#### TiDB Monitor
+![Grafana TiDB](assets/grafana_tidb.png)
+#### TiKV Monitor
+![Grafana TiKV](assets/grafana_tikv.png)
+#### PD Monitor
+![Grafana PD](assets/grafana_pd.png)
+### Performance Test
+### Failover Simulation
